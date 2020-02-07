@@ -7,12 +7,9 @@ SELECT * FROM mysql.help_topic;
 
 SELECT help_topic_id, help_category_id, url FROM mysql.help_topic;
 
-
 USE mysql;
 
-USE employees; 
-
-SELECT DATABASE();
+USE employees;
 
 SELECT * FROM departments;
 
