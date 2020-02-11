@@ -31,7 +31,7 @@ ORDER BY emp_no DESC;
 
 SELECT * FROM employees
 WHERE last_name LIKE 'e%' AND last_name LIKE '%e';
-ORDER BY emp_no DESC;
+ORDER BY last_name DESC;
 
 
 -- Last name starts with "e" and ends with "e"
