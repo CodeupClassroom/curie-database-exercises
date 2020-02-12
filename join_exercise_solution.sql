@@ -21,9 +21,16 @@ FROM roles r
 LEFT JOIN users u ON u.role_id = r.id
 GROUP BY r.name;
 
-USE employees;
 
-SELECT *
+
+
+
+
+USE employees;
+ -- show each department along with the name of the current manager 
+ -- for that department.
+
+SELECT dept_name, concat(first_name, " ", last_name) as "Current Manager"
 FROM departments d
 JOIN dept_manager dm ON dm.dept_no = d.dept_no
 JOIN employees e ON dm.emp_no = e.emp_no
@@ -31,5 +38,76 @@ WHERE dm.to_date > NOW();
 
 
 
+-- Find the name of all departments currently managed by women.
+-- employees table to get names and gender
+-- deptment_managers table to get manager
+-- department name
+SELECT dept_name as `Department Name`,
+    concat(first_name, " ", last_name) as `Manager Name`
+FROM employees
+JOIN dept_manager ON dept_manager.emp_no = employees.emp_no
+JOIN departments ON departments.dept_no = dept_manager.dept_no
+WHERE dept_manager.to_date > CURDATE()
+    AND gender = "F"
+ORDER BY `Department Name`;
 
 
+
+
+
+
+
+-- Find the current titles of employees 
+-- currently working in the Customer Service department.
+-- Titles table to get titles
+-- departments table to get department names
+SELECT title as "Title",
+    count(*) as "Count"
+FROM departments
+JOIN dept_emp ON dept_emp.dept_no = departments.dept_no
+JOIN titles ON titles.emp_no = dept_emp.emp_no
+WHERE titles.to_date > CURDATE()
+    AND dept_emp.to_date > CURDATE()
+    AND dept_name = "Customer Service"
+GROUP BY title;
+
+
+
+
+-- Find the current salary of all current managers.
+-- Department Name    | Name              | Salary
+-- -------------------+-------------------+-------
+-- Customer Service   | Yuchang Weedman   |  58745
+-- Development        | Leon DasSarma     |  74510
+
+-- departments table to get departments
+-- employees table to get employee names
+-- salaries table to get salaries
+-- dept_manager table to link manager emp_no to their dept_no
+
+SELECT dept_name as `Department Name`, 
+    CONCAT(first_name, " ", last_name) as `Manager Name`,
+    salary as `Salary`
+FROM salaries
+JOIN dept_manager ON dept_manager.emp_no = salaries.emp_no
+JOIN employees on employees.emp_no = dept_manager.emp_no
+JOIN departments on departments.dept_no = dept_manager.dept_no
+WHERE salaries.to_date > CURDATE()
+AND dept_manager.to_date > CURDATE()
+ORDER BY `Department Name`;
+
+
+-- Find the number of employees in each department.
+-- +---------+--------------------+---------------+
+-- | dept_no | dept_name          | num_employees |
+-- +---------+--------------------+---------------+
+-- | d001    | Marketing          | 14842         |
+-- | d002    | Finance            | 12437         |
+
+-- departments table to get dept name
+-- dept_emp to get employees that work in each dept
+SELECT dept_no, dept_name, count(*) as `num_employees`
+FROM departments
+JOIN dept_emp USING(dept_no)
+WHERE to_date > CURDATE()
+GROUP BY dept_no;
