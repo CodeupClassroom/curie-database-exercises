@@ -79,3 +79,50 @@ GROUP BY d.dept_name WITH ROLLUP;
 
 
 
+
+
+-- Find all the employees that currently have a higher than average salary.
+-- 154543 rows in total. Here is what the first 5 rows will look like:
+-- +------------+-----------+--------+
+-- | first_name | last_name | salary |
+-- +------------+-----------+--------+
+-- | Georgi     | Facello   | 88958  |
+-- | Bezalel    | Simmel    | 72527  |
+-- | Chirstian  | Koblick   | 74057  |
+-- | Kyoichi    | Maliniak  | 94692  |
+-- | Tzvetan    | Zielinski | 88070  |
+-- +------------+-----------+--------+
+
+-- employees table to get names
+-- salary table to get the salary info
+SELECT first_name, last_name, salary
+FROM employees
+JOIN salaries using(emp_no)
+WHERE salary > (
+	SELECT AVG(salary)
+	FROM salaries
+)
+AND
+to_date > CURDATE();
+
+
+	
+
+
+-- How many current salaries are within 1 standard deviation of the highest salary? 
+-- (Hint: you can use a built in function to calculate the standard deviation.) 
+-- What percentage of all salaries is this?
+-- 78 salaries
+
+SELECT 
+(SELECT count(*)
+FROM salaries
+WHERE salary >= (
+	(SELECT max(salary)
+	FROM salaries) - (SELECT STDDEV(salary) FROM salaries))
+AND to_date > curdate())
+/ (SELECT count(*) from salaries where to_date > curdate());
+
+
+
+
