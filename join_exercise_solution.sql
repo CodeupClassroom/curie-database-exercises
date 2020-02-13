@@ -111,3 +111,56 @@ FROM departments
 JOIN dept_emp USING(dept_no)
 WHERE to_date > CURDATE()
 GROUP BY dept_no;
+
+
+-- Which department has the highest average salary?
+-- +-----------+----------------+
+-- | dept_name | average_salary |
+-- +-----------+----------------+
+-- | Sales     | 88852.9695     |
+-- +-----------+----------------+
+-- salaries table for salaries
+-- departments table to get dept_name
+-- dept_emp table to get all employees that work for each dept
+SELECT dept_name, AVG(salary) as `Highest Average Salary`
+FROM salaries
+JOIN dept_emp USING(emp_no)
+JOIN departments USING(dept_no)
+WHERE dept_emp.to_date > now()
+AND salaries.to_date > now()
+GROUP BY dept_name
+ORDER BY `Highest Average Salary` DESC
+LIMIT 1;
+
+
+
+
+-- Who is the highest paid employee in the Marketing department?
+SELECT first_name, last_name, salary
+FROM employees
+JOIN dept_emp on dept_emp.emp_no = employees.emp_no
+JOIN salaries on salaries.emp_no = dept_emp.emp_no
+JOIN departments on departments.dept_no = dept_emp.dept_no
+WHERE salaries.to_date > CURDATE()
+AND dept_emp.to_date > CURDATE()
+AND dept_name = "Marketing"
+ORDER BY salary DESC
+LIMIT 1;
+
+
+
+
+
+
+
+-- Which current department manager has the highest salary?
+SELECT first_name, last_name, salary, dept_name
+FROM dept_manager
+JOIN employees USING(emp_no)
+JOIN salaries USING(emp_no)
+JOIN departments using(dept_no)
+WHERE salaries.to_date > CURDATE()
+AND dept_manager.to_date > CURDATE()
+ORDER BY salary DESC
+LIMIT 1;
+
